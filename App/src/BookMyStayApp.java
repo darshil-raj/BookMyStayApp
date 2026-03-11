@@ -1,12 +1,15 @@
+import java.util.HashMap;
+
 /**
- * UseCase2RoomInitialization
- * Demonstrates Room Types using Abstraction and Inheritance
- * Hotel Booking System v2.0
+ * UseCase3InventorySetup
+ * Demonstrates centralized inventory management using HashMap
+ * Hotel Booking System v3.0
  *
  * @author Munna
- * @version 2.0
+ * @version 3.0
  */
 
+/* Abstract Room Class */
 abstract class Room {
 
     protected String roomType;
@@ -27,40 +30,74 @@ abstract class Room {
         System.out.println("Size: " + size + " sq.ft");
         System.out.println("Price per night: ₹" + price);
     }
+
+    public String getRoomType() {
+        return roomType;
+    }
 }
 
-/* Single Room */
-class SingleRoom extends Room {
+/* Room Types */
 
+class SingleRoom extends Room {
     public SingleRoom() {
         super("Single Room", 1, 200, 2000);
     }
 }
 
-/* Double Room */
 class DoubleRoom extends Room {
-
     public DoubleRoom() {
         super("Double Room", 2, 350, 3500);
     }
 }
 
-/* Suite Room */
 class SuiteRoom extends Room {
-
     public SuiteRoom() {
         super("Suite Room", 3, 600, 7000);
     }
 }
 
-/* Main Application Class */
-public class UseCase2RoomInitialization {
+/* Inventory Class */
+
+class RoomInventory {
+
+    private HashMap<String, Integer> inventory;
+
+    public RoomInventory() {
+        inventory = new HashMap<>();
+
+        // Initialize availability
+        inventory.put("Single Room", 5);
+        inventory.put("Double Room", 3);
+        inventory.put("Suite Room", 2);
+    }
+
+    public int getAvailability(String roomType) {
+        return inventory.getOrDefault(roomType, 0);
+    }
+
+    public void updateAvailability(String roomType, int count) {
+        inventory.put(roomType, count);
+    }
+
+    public void displayInventory() {
+
+        System.out.println("\n--- Current Room Inventory ---");
+
+        for (String room : inventory.keySet()) {
+            System.out.println(room + " Available: " + inventory.get(room));
+        }
+    }
+}
+
+/* Main Application */
+
+public class UseCase3InventorySetup {
 
     public static void main(String[] args) {
 
         System.out.println("=================================");
         System.out.println(" Welcome to Book My Stay App ");
-        System.out.println(" Hotel Booking System v2.0 ");
+        System.out.println(" Hotel Booking System v3.0 ");
         System.out.println("=================================");
 
         // Create room objects
@@ -68,23 +105,24 @@ public class UseCase2RoomInitialization {
         Room doubleRoom = new DoubleRoom();
         Room suite = new SuiteRoom();
 
-        // Static availability
-        int singleAvailable = 5;
-        int doubleAvailable = 3;
-        int suiteAvailable = 2;
+        // Initialize inventory
+        RoomInventory inventory = new RoomInventory();
 
         System.out.println("\n--- Room Details ---\n");
 
         single.displayRoomDetails();
-        System.out.println("Available Rooms: " + singleAvailable);
+        System.out.println("Available: " + inventory.getAvailability(single.getRoomType()));
         System.out.println();
 
         doubleRoom.displayRoomDetails();
-        System.out.println("Available Rooms: " + doubleAvailable);
+        System.out.println("Available: " + inventory.getAvailability(doubleRoom.getRoomType()));
         System.out.println();
 
         suite.displayRoomDetails();
-        System.out.println("Available Rooms: " + suiteAvailable);
+        System.out.println("Available: " + inventory.getAvailability(suite.getRoomType()));
+
+        // Display full inventory
+        inventory.displayInventory();
 
         System.out.println("\nApplication finished.");
     }
